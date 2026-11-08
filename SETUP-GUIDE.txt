@@ -1,0 +1,51 @@
+KINGDOM SPIRIT TECHNOLOGY — SETUP GUIDE (CLOUDFLARE PAGES)
+
+This website is prepared for Cloudflare Pages with Pages Functions. Read START-HERE-KST-BACKEND.md for the beginner step-by-step walkthrough and CLOUDFLARE-DEPLOYMENT.md for the detailed deployment reference.
+
+PROJECT STRUCTURE
+- index.html / home.html: public website entry pages.
+- pages/ and services/: public company and service pages.
+- enquiries/: contact, quote, consultation and project request forms.
+- checkout/checkout.html: customer checkout and invoice payment page.
+- account/: customer login, registration, dashboard and password recovery.
+- admin/: restricted administrator sign-in and dashboard.
+- js/: browser-side Supabase authentication, customer/admin dashboards, enquiry and checkout logic.
+- functions/api/: Cloudflare Pages Functions for enquiries, Paystack payment initialization, webhook and verification.
+- functions/_shared/: shared Cloudflare backend helpers.
+- supabase/schema.sql: Supabase database structure, triggers, row-level security and private file bucket.
+- config.js: public Supabase Project URL and Publishable key only. The current KST project values are already configured in this package; do not replace them unless intentionally switching projects.
+- wrangler.toml: Cloudflare Pages project configuration.
+
+IMPORTANT PLATFORM CHANGE
+This project is configured for Cloudflare Pages Functions. Do not deploy it as a static-only upload. Use Cloudflare Pages Git integration with the repository root, build command `exit 0`, and output directory `.` so the backend functions are included.
+
+CREDENTIAL PLACEHOLDERS
+The current KST Project URL and Publishable key are already present in config.js. Do not overwrite them with a secret key. Only change them if you deliberately switch Supabase projects. Add SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, SUPABASE_SECRET_KEY, PAYSTACK_SECRET_KEY and PAYSTACK_WEBHOOK_SECRET in Cloudflare Pages Settings > Variables and Secrets. Save SUPABASE_SECRET_KEY, PAYSTACK_SECRET_KEY and PAYSTACK_WEBHOOK_SECRET as encrypted secrets. PAYSTACK_CALLBACK_URL is optional. Never put secret keys in browser files.
+
+DATABASE
+Run the complete supabase/schema.sql in Supabase SQL Editor. The schema supports both guest service requests and authenticated customer requests. Authenticated requests are associated with a profile; guest requests are saved with client_id NULL.
+
+REQUEST AND PAYMENT FLOW
+Visitors can submit service requests without registering. After successful submission they are sent to checkout with a request reference. A service request does not automatically define a price; the team must review the scope and issue an approved invoice. Customers then sign in, open Invoices & Payments in their dashboard, and pay the approved invoice through Paystack's hosted checkout.
+
+PAYSTACK
+Set the Paystack webhook to https://YOUR-PROJECT.pages.dev/api/paystack/webhook. Add the Paystack webhook signing secret (whsec_...) as PAYSTACK_WEBHOOK_SECRET, and use test keys first. Payment initialization and verification run only in Cloudflare Pages Functions. The webhook checks Paystack's HMAC signature, amount and currency before marking an invoice paid.
+
+ADMINISTRATOR
+Register the administrator account, confirm its email and sign in once. Then run the admin role update SQL shown in CLOUDFLARE-DEPLOYMENT.md. Sign out and back in before opening admin/admin-dashboard.html.
+
+LOCAL DEVELOPMENT
+Run npm install, copy .dev.vars.example to .dev.vars, replace the placeholders with test credentials, and run npm run dev. Never commit .dev.vars.
+
+SUPPORT
+If customer login is unavailable, check the public Supabase values in config.js and the Supabase Auth redirect URLs. If an enquiry cannot be submitted, check the Cloudflare Functions variables, especially SUPABASE_URL and SUPABASE_SECRET_KEY. If Paystack checkout cannot start, check SUPABASE_PUBLISHABLE_KEY, SUPABASE_SECRET_KEY and PAYSTACK_SECRET_KEY in Cloudflare.
+
+
+DEPLOYMENT REPAIR NOTE (7 November 2026)
+This package places all website files directly at the repository root and uses URL-safe folder names such as account/, pages/, services/, enquiries/, legal/, checkout/ and admin/. Confirm that index.html, js/, functions/ and these page folders are at the top level of the GitHub repository. Do not upload the ZIP itself or place the entire project inside an extra parent folder.
+
+CHATBOT DISPLAY NOTE
+- The circular KST launcher is loaded by js/chatbot.js and styled by css/chatbot.css.
+- The script uses a site-root path derived from its own location, so the website can be previewed from inside an extracted parent folder.
+- On the homepage, keep the extracted website folder as the local server root when possible; open the site at its folder URL.
+- The AI reply endpoint still requires the Cloudflare Pages Function and Workers AI binding named AI to be deployed.

@@ -1,0 +1,15 @@
+PUBLIC WEBSITE AND CUSTOMER REQUEST FLOW
+
+- Public visitors can browse the homepage, company pages, service pages, portfolio and policy pages without creating an account.
+- Customer login and registration are separate from public browsing.
+- Contact, quote, consultation and project brief forms accept guest submissions through the Cloudflare Pages Function at POST /api/enquiries.
+- Signed-in submissions are associated with the customer's Supabase profile. Guest submissions are stored with no client profile association.
+- After successful submission, the visitor is redirected to checkout/checkout.html with a request reference.
+- Checkout confirms receipt. It does not invent or collect a project price; the team must review and issue an approved invoice first.
+- Registered customers can review and pay approved invoices from their client dashboard using the Cloudflare Paystack Functions.
+
+DEPLOYMENT
+Deploy the complete project through Cloudflare Pages Git integration. Use `exit 0` as the build command and `.` as the build output directory. Do not use a static-only upload because the backend functions are required.
+
+KEYS
+Replace the public Supabase placeholders in config.js. Add the Supabase Secret and Paystack Secret as encrypted Cloudflare Pages secrets. Never put private API keys in frontend files.

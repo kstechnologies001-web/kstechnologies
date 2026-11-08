@@ -1,0 +1,43 @@
+KINGDOM SPIRIT TECHNOLOGY — PREMIUM REFRESH REVIEW
+Cloudflare Pages + Supabase project · 8 November 2026
+
+BASE PACKAGE
+- Updated from the latest supplied archive: KST_Supabase_Connected.zip (7 November 2026).
+- Preserved the existing Supabase browser configuration, customer/admin pages, Cloudflare Pages Functions, Paystack routes, and website page structure.
+
+DESIGN CHANGES
+- Applied the Obsidian Black + Champagne Gold palette across the shared design system.
+- Changed heading typography to Playfair Display while retaining DM Sans for body text.
+- Increased and refined the homepage hero headline and section-heading scale.
+- Redesigned Log in and Register in the announcement bar as clear, responsive account buttons.
+- Removed three repetitive homepage sections: illustrative concepts, digital foundations (overlapping with Why Choose Us), and the separate commitment strip. Service pages, service spotlights, Why Choose Us, Process, Ways to Begin, FAQs and final CTA remain.
+- Rebuilt the floating chatbot launcher as a small 48px desktop / 46px mobile circle with KST centred. Chat panel uses the new black and champagne-gold palette.
+- Reworked checkout with invoice details, due date, request-first explanation, clear payment journey, security guidance and WhatsApp support. Invoice payment still requires a signed-in customer and an approved invoice.
+
+BACKEND PRESERVED
+- Contact form: Supabase public.contact_messages (visitor INSERT only).
+- Chatbot FAQ lookup: Supabase public.faq_entries (published rows only), passed as reference data to Cloudflare /api/chat.
+- Customer authentication, enquiries, profile, project, invoice, notification, support-ticket and private client-file features remain in the existing modules/schema.
+- Cloudflare Pages Functions remain at functions/api, including enquiries and Paystack initialize/verify/webhook endpoints. The webhook now validates Paystack’s current timestamped Paystack-Signature header and retains legacy x-paystack-signature compatibility.
+- Supabase Project URL and Publishable key in config.js were preserved. No Supabase Secret key or Paystack Secret key has been added to public files.
+
+IMPORTANT BEFORE LIVE USE
+- The ZIP cannot install Cloudflare/Supabase secrets, bind Workers AI, configure Auth redirect URLs, or deploy to the user's accounts.
+- Run supabase/schema.sql if the wider customer portal schema is not already installed.
+- Run supabase/website-table-permissions.sql to create/secure the contact_messages and faq_entries tables and apply the least-privilege grants/policies. Existing tables are not dropped.
+- Add SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, SUPABASE_SECRET_KEY, PAYSTACK_SECRET_KEY and PAYSTACK_WEBHOOK_SECRET in Cloudflare Pages settings. Save SUPABASE_SECRET_KEY, PAYSTACK_SECRET_KEY and PAYSTACK_WEBHOOK_SECRET as encrypted secrets. SUPABASE_SECRET_KEY must be a Supabase Secret key, never the browser Publishable key.
+- Add the Workers AI binding named AI to the Pages project for /api/chat.
+- Configure Supabase Auth Site URL/Redirect URLs and test registration, email confirmation, login, password reset and logout.
+- Configure Paystack test secret and webhook before attempting test payments.
+- Promote the intended administrator account with the SQL in START-HERE-KST-BACKEND.md.
+- Live end-to-end tests require the actual Cloudflare/Supabase/Paystack accounts and cannot be verified from the ZIP alone.
+
+VALIDATION
+- Static files and source modules have been reviewed and are packaged for Cloudflare Pages Functions.
+- Local syntax/link checks are included in the handover checklist and should be run after extraction and before deployment.
+
+CHATBOT DISPLAY NOTE
+- The circular KST launcher is loaded by js/chatbot.js and styled by css/chatbot.css.
+- The script uses a site-root path derived from its own location, so the website can be previewed from inside an extracted parent folder.
+- On the homepage, keep the extracted website folder as the local server root when possible; open the site at its folder URL.
+- The AI reply endpoint still requires the Cloudflare Pages Function and Workers AI binding named AI to be deployed.

@@ -1,0 +1,9 @@
+/ /index.html 200
+/login /account/login.html 302
+/register /account/login.html?view=register 302
+/dashboard /account/client-dashboard.html 302
+/services /pages/services.html 302
+/about /pages/about.html 302
+/contact /enquiries/contact.html 302
+/request-quote /enquiries/request-quote.html 302
+/checkout /checkout/checkout.html 302

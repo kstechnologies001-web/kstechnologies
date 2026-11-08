@@ -1,0 +1,51 @@
+KINGDOM SPIRIT TECHNOLOGY — CLOUDFLARE PAGES REDEPLOY FIX
+
+WHY THIS PACKAGE EXISTS
+The live site currently displays its homepage but other routes and the chatbot are missing. This repair package uses URL-safe folder names (no spaces) and includes the chat widget script in every HTML page. It also adds /api/health so Pages Functions deployment can be checked independently.
+
+VERY IMPORTANT: THE GITHUB REPOSITORY ROOT
+Upload the CONTENTS of this extracted folder, not the ZIP file and not a containing folder. At the TOP LEVEL of your GitHub repository you must see:
+- index.html
+- style.css
+- config.js
+- _redirects
+- _headers
+- wrangler.toml
+- functions/
+- js/
+- account/
+- admin/
+- pages/
+- services/
+- enquiries/
+- legal/
+- checkout/
+- supabase/
+If those folders are nested one level deeper, Cloudflare will not find the pages or Functions at the expected routes.
+
+CLOUDFLARE PAGES BUILD SETTINGS
+- Framework preset: None
+- Build command: exit 0
+- Build output directory: .
+- Root directory: leave blank / repository root
+- Deploy command: not applicable for Pages Git integration
+
+AFTER UPDATING GITHUB
+A new commit to the connected production branch (normally main) should trigger a new Cloudflare Pages deployment. Open Cloudflare Pages > your project > Deployments and wait until the newest deployment reports Success.
+
+SMOKE TESTS
+1. https://YOUR-PROJECT.pages.dev/ — homepage
+2. https://YOUR-PROJECT.pages.dev/account/login.html — login/register
+3. https://YOUR-PROJECT.pages.dev/pages/services.html — services
+4. https://YOUR-PROJECT.pages.dev/js/chatbot.js — should display JavaScript source, not a 404 page
+5. https://YOUR-PROJECT.pages.dev/api/health — should return JSON with ok:true and platform: Cloudflare Pages Functions
+6. https://YOUR-PROJECT.pages.dev/api/chat — GET may return 405; this route accepts POST from the chat widget.
+
+CHATBOT
+The floating chat button is injected by /js/chatbot.js on every HTML page. For AI answers, add a Workers AI binding to the Pages project: Settings > Bindings > Add > Workers AI; set the variable name to AI, save, and redeploy. If the icon is visible but answers are unavailable, the AI binding is the next item to check.
+
+DATABASE AND PAYMENT SETUP
+The homepage and static pages can load before credentials are entered. Customer login needs Supabase values in config.js and the matching Cloudflare runtime variables. Service enquiries need the Supabase backend variables and schema. Paystack payments need a Paystack secret key and webhook setup. Never place secret keys in browser files or GitHub. Read CLOUDFLARE-DEPLOYMENT.md and SETUP-GUIDE.txt for the full list.
+
+SAFETY
+Do not paste real Supabase secret keys or Paystack secret keys into public source files or chat. Store them only as encrypted Cloudflare secrets.

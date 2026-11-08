@@ -1,0 +1,17 @@
+{
+  "name": "kingdom-spirit-technology-cloudflare-pages",
+  "version": "3.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev . --ai AI",
+    "deploy": "wrangler pages deploy . --project-name=kstw",
+    "deploy:preview": "wrangler pages deploy . --project-name=kstw --branch=preview"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

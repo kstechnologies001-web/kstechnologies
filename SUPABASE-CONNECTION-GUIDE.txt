@@ -1,0 +1,51 @@
+KST WEBSITE + SUPABASE CONNECTION
+=================================
+
+This package is configured with the Supabase Project URL and Publishable key
+provided for the KST project. The publishable key is intended for browser use;
+never place a Supabase Secret key or service_role key in config.js.
+
+CONNECTED FEATURES
+------------------
+1. enquiries/contact.html now inserts contact form submissions into
+   public.contact_messages using the columns full_name, email and message.
+   Phone/WhatsApp and service-of-interest values are preserved inside the
+   message text because the table does not currently have separate columns
+   for those fields. The id and created_at values are supplied by database
+   defaults.
+
+2. js/chatbot.js requests only published rows from public.faq_entries
+   (is_published = true) and passes that FAQ reference data to /api/chat.
+   The AI assistant can then use those saved answers when relevant. If the
+   FAQ table is empty, the chatbot continues using its built-in KST business
+   information but has no custom FAQ entries to consult.
+
+SUPABASE PERMISSIONS
+-------------------
+The RLS policies you created should remain enabled:
+- contact_messages: INSERT for anon and authenticated, WITH CHECK (true).
+- faq_entries: SELECT for anon and authenticated, USING (is_published = true).
+
+Run supabase/website-table-permissions.sql in Supabase SQL Editor. It creates either website table if missing, enables RLS, removes older policies on only these two website tables, and installs the strict rules: contact_messages allows INSERT only, while faq_entries allows SELECT only for is_published=true. It does NOT grant public read access to contact_messages and does NOT turn RLS off.
+
+ADDING FAQ CONTENT
+------------------
+Open Supabase > Table Editor > faq_entries and add rows with a question,
+answer and is_published = true. Keep answers factual and specific to KST.
+Rows with is_published = false will not be returned to the website chatbot.
+The chatbot lazily loads up to 40 published FAQ rows the first time a visitor sends a chat message, then selects up to 8 relevant entries for each question.
+
+TESTING
+-------
+- Submit a test message at /enquiries/contact.html.
+- In Supabase > Table Editor > contact_messages, confirm a new row appears.
+- Add at least one test FAQ row with is_published = true.
+- Reload the website and ask the chatbot that FAQ question; confirm it uses
+  the saved answer when relevant.
+
+SCOPE NOTE
+----------
+The separate quote, consultation and project-brief forms still use the
+existing /api/enquiries route and the separate public.enquiries table. They
+were intentionally left unchanged. This update connects contact_messages
+and faq_entries without changing the other forms or the site's visual design.
