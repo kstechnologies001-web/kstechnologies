@@ -4,8 +4,8 @@
  * Never put a Supabase Secret key or any Paystack API secret in this file.
  */
 window.KST_CONFIG = {
-  SUPABASE_URL: "https://ffilvqjqcjvghburbhxu.supabase.co",
-  SUPABASE_PUBLISHABLE_KEY: "sb_publishable_77zoWz4x5uNmkgCv_G9PbQ_X1xO16a5",
+  SUPABASE_URL: "https://olegqtbbnztkwdacxhbu.supabase.co",
+  SUPABASE_PUBLISHABLE_KEY: "sb_publishable_F1NUQvDPRTcQzYdDeayO7w_FqxMYBl6",
   SOCIAL: {
     instagram: "https://www.instagram.com/kingdom_spirit_tech2580/",
     youtube: "https://www.youtube.com/@kingdom_spirit_tech2580"
